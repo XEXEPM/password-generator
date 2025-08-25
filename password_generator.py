@@ -1,104 +1,71 @@
-import random
-import tkinter as tk
+import customtkinter as ctk
 import pyperclip
-from tkinter import ttk 
+import random
+import pyperclip
 
-color = ''
+f = ''
 
-app = tk.Tk()
-style = ttk.Style(app)
-app.geometry("400x200")
+app = ctk.CTk()
+app.geometry("400x250")
 app.resizable(False, False)    
 app.title("Secure Password Generator")
-app.configure(background="black")
-style.theme_use('default')
-color = 'black'
-color_bg = 'black'
-color_fg = 'white'
-btn_bg = '#444444'     # fundo normal do botão
-btn_fg = 'orange'      # texto do botão
-btn_active = '#666666' # fundo quando estiver 'hover'
-btn_pressed = '#222222'
 
-lf = ttk.LabelFrame(app, text='Password generator')
-lf.pack(padx=20, pady=1)
-style = ttk.Style()
-style.theme_use('clam')
-style.configure("Custom.TLabelframe.Label", background=color, foreground="4CCB08#")
-style.configure("Custom.TLabelframe", background=color, foreground="blue")
-style.configure(
-    "BW.TButton",
-    background=color,      
-    foreground="white",      
-    borderwidth=2,           
-    relief="solid",          
-    focusthickness=0  
-)
-style.map(
-    "BW.TButton",
-    background=[
-        ("active", color),    # hover
-        ("pressed", "gray30")    # pressed
-    ],
-    foreground=[
-        ("disabled", "gray50")
-    ]
-) 
+def pass_gen():
+    li = 'qwertyuiopasdghjklçzxcvbnm'
+    ttc = 'QWERTYUIOPASDFGHJKLÇZXCVBNM'
+    fr = '!"#$%&/()=?»«}[{@£|-_:.;,/]'
+    num = '1234567890'
+    d = 0
+    c = ''
+    global f
+    for i in range(random.randint(12,20)):
 
-lf = ttk.LabelFrame(app, text='        Password generator', style="Custom.TLabelframe")
-lf.place(relx=0.5, rely=0.5, width=390, height=190,anchor=tk.CENTER)
-
-Labe = ttk.Label(lf, text="", background=color,font=("Arial", 12), foreground="white")
-Labe.pack(pady=10,fill='both')
-ll = ttk.Label(lf, text="", background=color, foreground="#4CCB08", font=("Arial", 14), anchor='center', justify='center', width=30)
-ll.pack(pady=10,fill='both')
-
-botao = ttk.Button(lf, command=lambda: secure_pass(),style="BW.TButton", text="Generate Password", padding=5)
-botao.place(x=50, y=100,width=120)
-copiar = ttk.Button(lf, text="Copy to Clipboard",style="BW.TButton", command=lambda: copy(), padding=5)
-copiar.place(x=220, y=100, bordermode='inside',width=120)
+        c = [random.choice(li), random.choice(ttc), random.choice(fr), random.choice(num)]
+        f = c[random.randint(0, 3)]
 
 
-text_var = tk.StringVar()
-textbox = ttk.Entry(lf, textvariable=text_var).place(x=99999,y=99999)
-text_var.trace_add("write", lambda *args: ll.config(text=text_var.get()))
+    for i in c:
+        if i not in li:
+            ps = random.randint(0, len(f))
+            pv = str(random.choice(li))
+            f = f[:ps] + pv + f[ps:]
+        if i not in ttc:
+            ps = random.randint(0, len(f))
+            pv = str(random.choice(ttc))
+            f = f[:ps] + pv + f[ps:]
+        if i not in fr:
+            ps = random.randint(0, len(f))
+            pv = str(random.choice(fr))
+            f = f[:ps] + pv + f[ps:]
+        if i not in num:
+            ps = random.randint(0, len(f))
+            pv = str(random.choice(num))
+            f = f[:ps] + pv + f[ps:]
+        else:
+            pass
+    return l1.configure(text=f'a password segura e \n {f}',font=('robonto',26))
 
-def secure_pass():
-    digits = '0123456789'
-    specials = '«»-/*+?=_@#$%&()!:;"%<>[]{}|^`~'
-    lowers = 'abcdefghijklmnopqrstuvwxyz'
-    uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    abc = [
-        random.choice(digits),
-        random.choice(specials),
-        random.choice(lowers),
-        random.choice(uppers)
-    ]
-    l = '' 
-    i = 0
-    while i < random.randint(8,16) :
-        l = str(l) +random.choice(abc)
-        i +=1
-    text_var.set(l)
-    Labe.config(text="         Your Secure Password is:", background=color, foreground="white")
-    all_chars = digits + specials + lowers + uppers
-    while len(abc) < random.randint(8, 16):
-        abc.append(random.choice(all_chars)) 
-        random.shuffle(abc)
-        l = ''.join(abc)
-    text_var.set(l)
-    return l
 
-c = text_var.get()
+def copy_pass():
+    if f == '':
+        l1.configure(text=f'clique em gerar \n para gerar a senha segura',font=('robonto',26))
+    else:
+        l1.configure(text=f'a password foi copiada para \na Área de transferência',font=('robonto',26))
+        return pyperclip.copy(str(f))
+d = 'copiar'
 
-def copy():
-    cp = text_var.get()
-    global ll
-    global Labe
-    if cp =='':
-        ll.config(text="click on the botton generate pass\n to generate the secure password", background=color, foreground="white",font=('arial',12))
-    else: 
-        pyperclip.copy(cp)
-        Labe.config(text="        password copy to the clipboard!", background=color, foreground="white")
+
+l1 = ctk.CTkLabel(app,text='gerador de senhas seguras',font=('robonto',26))
+l1.place_configure(y=80,x=250,anchor="center",bordermode='inside')
+l1.configure(text=f,font=('robonto',26))
+
+
+b1 = ctk.CTkButton(app,fg_color='#003d5c',font=('arial',20),command=pass_gen,text='gerar',anchor="center",border_width=2,border_color="#012B40",hover=True,hover_color='#014161')
+b1.place_configure(width=150,height=50,x=50,y=180)
+
+b2 = ctk.CTkButton(app,fg_color='#003d5c',font=('arial',20),text=d,command=copy_pass,anchor="center",border_width=2,border_color='#012B40',hover=True,hover_color="#014161")
+b2.place_configure(width=150,height=50,x=300,y=180)
+
+
 
 app.mainloop()
