@@ -1,7 +1,6 @@
 import customtkinter as ctk
 import pyperclip
 import random
-import pyperclip
 
 f = ''
 
